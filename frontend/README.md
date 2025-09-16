@@ -2,32 +2,25 @@
 
 This is the frontend for Medicine Authenticity & Supply Chain (MASCD).
 
-## Local Development
-
-1. Create `.env` with:
+## Local Build
 
 ```
-VITE_API_URL=http://localhost:3000
-```
-
-2. Install and run:
-
-```
+cd frontend
 npm install
-npm run dev
+npm run build
 ```
+This produces `frontend/dist/`.
 
-Open http://localhost:5173
+## Deploy on Vercel (from repo root)
 
-## Deployment on Vercel
-
-- Root Directory: `frontend`
+- Connect the GitHub repo on Vercel.
+- Ensure repo root contains `vercel.json` with static build of `frontend/`.
 - Build Command: `npm run build`
-- Output Directory: `dist`
+- Output Directory: `frontend/dist`
 - Environment Variable:
-  - `VITE_API_URL = <your Render backend URL>` (e.g., `https://mascd-api.onrender.com`)
+  - `VITE_API_URL = https://<your-backend-url>` (Render/other backend)
 
-SPA routing is configured via `frontend/vercel.json` so all routes serve `index.html`.
+After deploy, all SPA routes will serve `index.html` as configured in root `vercel.json`.
 
 ## API Base URL
 
