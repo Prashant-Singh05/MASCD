@@ -1,0 +1,1 @@
+This file exists to ensure the routes directory is committed. Real route files are present: auth.js, medicines.js, batches.js, transactions.js, verify.js, reports.js.
