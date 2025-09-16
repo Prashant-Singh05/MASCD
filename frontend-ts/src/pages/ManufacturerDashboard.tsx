@@ -3,6 +3,8 @@ import { Package, Database, AlarmClock } from 'lucide-react'
 import { motion } from 'framer-motion'
 import KpiCard from '../components/ui/KpiCard'
 import DataTable, { Column } from '../components/ui/DataTable'
+import ChartCard from '../components/ui/ChartCard'
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts'
 
 // Mock batches
 type Batch = { id: string; medicine: string; quantity: number; mfg: string; exp: string; status: 'in_production'|'with_distributor'|'with_pharmacy'|'sold' }
@@ -10,6 +12,8 @@ const MOCK: Batch[] = [
   { id: 'B-1001', medicine: 'PainAway 200mg', quantity: 1000, mfg: '2024-01-01', exp: '2026-01-01', status: 'in_production' },
   { id: 'B-1002', medicine: 'CoughRelief 10mg', quantity: 500, mfg: '2024-02-15', exp: '2025-12-31', status: 'with_distributor' },
 ]
+
+const COLORS = ['#06b6d4', '#0ea5a4', '#0891b2', '#0e7490']
 
 export default function ManufacturerDashboard() {
   const [batches, setBatches] = useState<Batch[]>(MOCK)
@@ -60,6 +64,11 @@ export default function ManufacturerDashboard() {
     }, 600)
   }
 
+  const lineData = batches.map((b) => ({ date: b.mfg, qty: b.quantity }))
+  const pieData = Object.values(batches.reduce<Record<string, number>>((acc, b) => { acc[b.medicine] = (acc[b.medicine]||0) + b.quantity; return acc }, {})).length
+    ? Object.entries(batches.reduce<Record<string, number>>((acc, b) => { acc[b.medicine] = (acc[b.medicine]||0) + b.quantity; return acc }, {})).map(([name, value]) => ({ name, value }))
+    : []
+
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-3 gap-4">
@@ -102,6 +111,33 @@ export default function ManufacturerDashboard() {
           </div>
         </form>
       </motion.section>
+
+      <div className="grid lg:grid-cols-2 gap-4">
+        <ChartCard title="Batches over time" description="Quantities per manufacture date">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={lineData}>
+                <XAxis dataKey="date" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip />
+                <Line type="monotone" dataKey="qty" stroke="#06b6d4" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </ChartCard>
+        <ChartCard title="Medicine distribution" description="Share by quantity">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={4}>
+                  {pieData.map((_, i) => (<Cell key={i} fill={COLORS[i % COLORS.length]} />))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </ChartCard>
+      </div>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Recent Batches</h2>
