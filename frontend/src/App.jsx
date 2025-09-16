@@ -1,30 +1,24 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
 import Home from './pages/Home.jsx'
-import Verify from './pages/Verify.jsx'
-import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
-import Manufacturer from './pages/Dashboard/Manufacturer.jsx'
-import Distributor from './pages/Dashboard/Distributor.jsx'
-import Pharmacy from './pages/Dashboard/Pharmacy.jsx'
-import Admin from './pages/Dashboard/Admin.jsx'
+import About from './pages/About.jsx'
+import Features from './pages/Features.jsx'
+import Contact from './pages/Contact.jsx'
 
 export default function App() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="container mx-auto p-4">
+      <main className="container mx-auto p-4 flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/verify" element={<Verify />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard/manufacturer" element={<Manufacturer />} />
-          <Route path="/dashboard/distributor" element={<Distributor />} />
-          <Route path="/dashboard/pharmacy" element={<Pharmacy />} />
-          <Route path="/dashboard/admin" element={<Admin />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
-      </div>
+      </main>
+      <Footer />
     </div>
   )
 }
