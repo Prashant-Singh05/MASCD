@@ -4,7 +4,7 @@ import sequelize from './config/db.js';
 
 dotenv.config();
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 async function start() {
   const skipDb = process.env.SKIP_DB === '1';
