@@ -8,6 +8,9 @@ const router = express.Router();
 
 router.get('/expired', authenticate, authorize(['admin']), async (_req, res, next) => {
   try {
+    if (process.env.SKIP_DB === '1') {
+      return res.json([]);
+    }
     const today = new Date().toISOString().slice(0, 10);
     const batches = await Batch.findAll({
       where: {

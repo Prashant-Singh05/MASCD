@@ -26,6 +26,12 @@ router.post(
   async (req, res, next) => {
     try {
       const { medicine_id, manufacture_date, expiry_date, quantity_produced } = req.body;
+      if (process.env.SKIP_DB === '1') {
+        const batch_code = generateBatchCode();
+        const verificationUrl = `${process.env.VITE_API_BASE || 'http://localhost:3001'}/api/verify?batch_code=${encodeURIComponent(batch_code)}`;
+        const qr = await generateBatchQrDataUrl(verificationUrl);
+        return res.status(201).json({ batch_code, qr_data_url: qr, batch: { batch_code, medicine_id, manufacture_date, expiry_date, quantity_produced, status: 'in_production' } });
+      }
       const medicine = await Medicine.findByPk(medicine_id);
       if (!medicine) {
         const err = new Error('Medicine not found');
@@ -58,6 +64,9 @@ router.get(
   async (req, res, next) => {
     try {
       const { batch_code } = req.params;
+      if (process.env.SKIP_DB === '1') {
+        return res.json({ batch_code, medicine: { name: 'Mock Medicine' }, manufacture_date: '2024-01-01', expiry_date: '2026-01-01', status: 'in_production' });
+      }
       const batch = await Batch.findOne({
         where: { batch_code },
         include: [Medicine]
@@ -79,6 +88,9 @@ router.get(
   async (req, res, next) => {
     try {
       const { batch_code } = req.params;
+      if (process.env.SKIP_DB === '1') {
+        return res.json([]);
+      }
       const batch = await Batch.findOne({ where: { batch_code } });
       if (!batch) return res.status(404).json({ error: { message: 'Batch not found' } });
       const history = await SupplyTransaction.findAll({ where: { batch_id: batch.id }, order: [['timestamp', 'ASC']] });

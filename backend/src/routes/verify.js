@@ -24,6 +24,9 @@ router.post(
   async (req, res, next) => {
     try {
       const { batch_code } = req.body;
+      if (process.env.SKIP_DB === '1') {
+        return res.json({ result: 'not_found' });
+      }
       const info = await getBatchAndHistory(batch_code);
       await Verification.create({
         batch_id: info.batch?.id || null,
@@ -45,6 +48,9 @@ router.get(
   async (req, res, next) => {
     try {
       const { batch_code } = req.query;
+      if (process.env.SKIP_DB === '1') {
+        return res.json({ result: 'not_found' });
+      }
       const info = await getBatchAndHistory(batch_code);
       await Verification.create({
         batch_id: info.batch?.id || null,

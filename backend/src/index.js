@@ -16,6 +16,10 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+app.get('/', (_req, res) => {
+  res.json({ name: 'MASCD API', status: 'ok', skipDb: process.env.SKIP_DB === '1' });
+});
+
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });

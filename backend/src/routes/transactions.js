@@ -17,6 +17,9 @@ router.post(
   body('note').optional().isString(),
   validate,
   async (req, res, next) => {
+    if (process.env.SKIP_DB === '1') {
+      return res.status(201).json({ message: 'Transfer recorded (mock)', transaction: { id: 1, batch_code: req.body.batch_code } });
+    }
     const t = await sequelize.transaction();
     try {
       const { batch_code, to_org_id, to_customer_id, note, location } = req.body;
